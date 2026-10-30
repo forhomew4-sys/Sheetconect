@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Worker Asset Generator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&display=swap');
+        body { font-family: 'Hind Siliguri', sans-serif; }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen py-10 px-4">
+    <div class="max-w-2xl mx-auto space-y-8">
+        <div class="text-center space-y-2">
+            <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-indigo-500/20 border border-indigo-500/30 mb-2">
+                <i class="fa-solid fa-user-gear text-2xl text-indigo-300"></i>
+            </div>
+            <h1 class="text-3xl font-bold text-indigo-400">Worker Asset Generator</h1>
+            <p class="text-slate-400">স্বয়ংক্রিয় ওয়ার্কার ডেটা তৈরি করুন এবং Google Sheet-এ জমা দিন।</p>
+        </div>
+
+        <div class="bg-slate-800 border border-slate-700 rounded-2xl p-6 shadow-xl space-y-6">
+            <input type="hidden" id="scriptUrl" value="https://script.google.com/macros/s/AKfycbx_i8ubQDrE4UoVDe6kA5QqUZ0LkZRJauf2HQTi3cKEwQoajrWeh7liExq2kMmVjkUR/exec">
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="space-y-1">
+                    <label class="text-xs font-medium text-slate-400">Name</label>
+                    <div class="relative">
+                        <input type="text" id="name" readonly class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm pr-8 text-slate-200">
+                        <button onclick="copyToClipboard('name')" class="absolute right-2 top-2.5 text-slate-400 hover:text-indigo-400"><i class="fa-regular fa-copy"></i></button>
+                    </div>
+                </div>
+
+                <div class="space-y-1">
+                    <label class="text-xs font-medium text-slate-400">Username</label>
+                    <div class="relative">
+                        <input type="text" id="username" readonly class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm pr-8 text-slate-200">
+                        <button onclick="copyToClipboard('username')" class="absolute right-2 top-2.5 text-slate-400 hover:text-indigo-400"><i class="fa-regular fa-copy"></i></button>
+                    </div>
+                </div>
+
+                <div class="space-y-1">
+                    <label class="text-xs font-medium text-slate-400">Telegram Username</label>
+                    <div class="relative">
+                        <input type="text" id="tgUsername" readonly class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm pr-8 text-slate-200">
+                        <button onclick="copyToClipboard('tgUsername')" class="absolute right-2 top-2.5 text-slate-400 hover:text-indigo-400"><i class="fa-regular fa-copy"></i></button>
+                    </div>
+                </div>
+
+                <div class="space-y-1">
+                    <label class="text-xs font-medium text-slate-400">Gmail</label>
+                    <div class="relative">
+                        <input type="text" id="email" readonly class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm pr-8 text-slate-200">
+                        <button onclick="copyToClipboard('email')" class="absolute right-2 top-2.5 text-slate-400 hover:text-indigo-400"><i class="fa-regular fa-copy"></i></button>
+                    </div>
+                </div>
+
+                <div class="space-y-1">
+                    <label class="text-xs font-medium text-slate-400">Phone Number</label>
+                    <div class="relative">
+                        <input type="text" id="phone" readonly class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm pr-8 text-slate-200">
+                        <button onclick="copyToClipboard('phone')" class="absolute right-2 top-2.5 text-slate-400 hover:text-indigo-400"><i class="fa-regular fa-copy"></i></button>
+                    </div>
+                </div>
+
+                <div class="space-y-1">
+                    <label class="text-xs font-medium text-slate-400">Password</label>
+                    <div class="relative">
+                        <input type="text" id="password" readonly class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm pr-8 text-slate-200">
+                        <button onclick="copyToClipboard('password')" class="absolute right-2 top-2.5 text-slate-400 hover:text-indigo-400"><i class="fa-regular fa-copy"></i></button>
+                    </div>
+                </div>
+
+                <div class="space-y-1">
+                    <label class="text-xs font-medium text-slate-400">Payment</label>
+                    <div class="relative">
+                        <input type="text" id="paymentEmail" readonly class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-sm pr-8 text-slate-200">
+                        <button onclick="copyToClipboard('paymentEmail')" class="absolute right-2 top-2.5 text-slate-400 hover:text-indigo-400"><i class="fa-regular fa-copy"></i></button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex flex-col sm:flex-row gap-3 pt-2">
+                <button onclick="generateData()" class="flex-1 bg-indigo-600 hover:bg-indigo-500 text-white font-medium py-2.5 rounded-lg transition flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-arrows-rotate"></i> Generate Data
+                </button>
+                <button id="submitBtn" onclick="submitData()" class="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white font-medium py-2.5 rounded-lg transition flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-paper-plane"></i> Submit to Sheet
+                </button>
+            </div>
+
+            <div id="statusMessage" class="hidden text-center text-sm p-3 rounded-lg"></div>
+        </div>
+    </div>
+
+    <script>
+        const firstNames = ['Tanvir', 'Rahim', 'Karim', 'Sabbir', 'Nayeem', 'Ayan', 'Hassan', 'Shakib', 'Tamim', 'Mahmud', 'Rafi', 'Imran', 'Jahid', 'Farhan', 'Nabil'];
+        const lastNames = ['Ahmed', 'Khan', 'Chowdhury', 'Hossain', 'Islam', 'Ali', 'Rahman', 'Sarkar', 'Mia', 'Uddin', 'Patwary', 'Kabir', 'Siddique', 'Mollah'];
+        const telegramPrefixes = ['x', 't', 'u', 'm', 'a', 'r', 'n', 'd', 'z', 'k'];
+        const telegramSuffixes = ['bot', 'live', 'pro', 'zone', 'hub', 'dev', 'team', 'x', 'chat', 'hub'];
+        const telegramUsernames = ['tguser', 'tgpro', 'telegramhub', 'chatx', 'globalchat', 'userbot', 'myhub', 'fastchat', 'foxlive', 'billionx', 'moonteam', 'devlive', 'telegramzone', 'newuser', 'signalx'];
+
+        function getRandomElement(arr) {
+            return arr[Math.floor(Math.random() * arr.length)];
+        }
+
+        function generateTelegramUsername(firstName, lastName) {
+            const patterns = [
+                `${firstName.toLowerCase()}${lastName.toLowerCase()}`,
+                `${firstName.toLowerCase()}_${lastName.toLowerCase()}`,
+                `${firstName.toLowerCase()}${lastName.toLowerCase()}${Math.floor(100 + Math.random() * 900)}`,
+                `${getRandomElement(telegramPrefixes)}${firstName.toLowerCase()}${lastName.toLowerCase()}`,
+                `${firstName.toLowerCase()}${getRandomElement(telegramSuffixes)}`,
+                `${firstName.toLowerCase()}_${getRandomElement(telegramSuffixes)}`,
+                `${getRandomElement(telegramUsernames)}`
+            ];
+
+            return `@${getRandomElement(patterns)}`;
+        }
+
+        function generateBangladeshPhoneNumber() {
+            const prefixes = ['+88017', '+88018', '+88019', '+88016', '+88015', '+88013'];
+            const rest = Array.from({ length: 8 }, () => Math.floor(Math.random() * 10)).join('');
+            return `${getRandomElement(prefixes)}${rest}`;
+        }
+
+        function generateRandomPassword(length = 12) {
+            const lowercase = 'abcdefghijklmnopqrstuvwxyz';
+            const uppercase = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+            const numbers = '0123456789';
+            const specials = '@#';
+            const allChars = lowercase + uppercase + numbers + specials;
+
+            const requiredChars = [
+                lowercase.charAt(Math.floor(Math.random() * lowercase.length)),
+                uppercase.charAt(Math.floor(Math.random() * uppercase.length)),
+                numbers.charAt(Math.floor(Math.random() * numbers.length)),
+                specials.charAt(Math.floor(Math.random() * specials.length)),
+                specials.charAt(Math.floor(Math.random() * specials.length))
+            ];
+
+            let passwordChars = [...requiredChars];
+
+            for (let i = requiredChars.length; i < length; i++) {
+                passwordChars.push(allChars.charAt(Math.floor(Math.random() * allChars.length)));
+            }
+
+            for (let i = passwordChars.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [passwordChars[i], passwordChars[j]] = [passwordChars[j], passwordChars[i]];
+            }
+
+            return passwordChars.join('');
+        }
+
+        async function generateData() {
+            const fn = getRandomElement(firstNames);
+            const ln = getRandomElement(lastNames);
+            const num = Math.floor(1000 + Math.random() * 9000);
+            
+            const fullName = `${fn} ${ln}`;
+            const username = `${fn.toLowerCase()}${ln.toLowerCase()}${num}`;
+            const tgUsername = generateTelegramUsername(fn, ln);
+            const email = `${username}@gmail.com`;
+            const phone = generateBangladeshPhoneNumber();
+            const password = generateRandomPassword();
+            let paymentEmail = '';
+
+            try {
+                const scriptUrl = document.getElementById('scriptUrl').value.trim();
+                const separator = scriptUrl.includes('?') ? '&' : '?';
+                const response = await fetch(`${scriptUrl}${separator}action=paymentEmail&request=${Date.now()}`, { cache: 'no-store' });
+                const result = await response.json();
+                if (!response.ok || !result.paymentEmail) throw new Error('Payment email is unavailable');
+                paymentEmail = result.paymentEmail;
+            } catch (error) {
+                paymentEmail = '';
+            }
+
+            document.getElementById('name').value = fullName;
+            document.getElementById('username').value = username;
+            document.getElementById('tgUsername').value = tgUsername;
+            document.getElementById('email').value = email;
+            document.getElementById('phone').value = phone;
+            document.getElementById('password').value = password;
+            document.getElementById('paymentEmail').value = paymentEmail;
+
+            showStatus(paymentEmail ? 'নতুন ডাটা তৈরি হয়েছে!' : 'Payment email পাওয়া যায়নি। Google Apps Script-এর নতুন version deploy করুন।', paymentEmail ? 'bg-indigo-900/50 text-indigo-300 border border-indigo-700' : 'bg-rose-900/50 text-rose-300 border border-rose-700');
+        }
+
+        function copyToClipboard(id) {
+            const input = document.getElementById(id);
+            if(!input.value) return;
+            
+            input.select();
+            navigator.clipboard.writeText(input.value);
+            showStatus(`${id.toUpperCase()} কপি করা হয়েছে!`, 'bg-amber-900/50 text-amber-300 border border-amber-700');
+        }
+
+        async function submitData() {
+            const url = document.getElementById('scriptUrl').value.trim();
+            const name = document.getElementById('name').value;
+            const username = document.getElementById('username').value;
+            const tgUsername = document.getElementById('tgUsername').value;
+            const email = document.getElementById('email').value;
+            const phone = document.getElementById('phone').value;
+            const password = document.getElementById('password').value;
+            const paymentEmail = document.getElementById('paymentEmail').value;
+
+            if(!url) {
+                showStatus('অনুগ্রহ করে Web App URL দিন!', 'bg-rose-900/50 text-rose-300 border border-rose-700');
+                return;
+            }
+
+            if(!name || !email) {
+                showStatus('প্রথমে Generate Data বাটনে ক্লিক করুন!', 'bg-rose-900/50 text-rose-300 border border-rose-700');
+                return;
+            }
+
+            if(!paymentEmail) {
+                showStatus('Payment email list-এ email paste করে Generate Data চাপুন।', 'bg-rose-900/50 text-rose-300 border border-rose-700');
+                return;
+            }
+
+            const btn = document.getElementById('submitBtn');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Submitting...';
+
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, username, tgUsername, email, phone, password, paymentEmail })
+                });
+
+                const responseText = await response.text();
+                let parsed;
+
+                try {
+                    parsed = JSON.parse(responseText);
+                } catch (e) {
+                    parsed = null;
+                }
+
+                if (!response.ok || (parsed && parsed.status === 'error')) {
+                    const detail = parsed && parsed.message ? parsed.message : responseText || `HTTP ${response.status}`;
+                    throw new Error(detail.includes('401') || response.status === 401
+                        ? 'Google Apps Script Web App access denied. Deployment-এ "Anyone" বা "Anyone with Google account" নির্বাচন করুন, তারপর নতুন URL ব্যবহার করুন.'
+                        : detail);
+                }
+
+                showStatus('সফলভাবে Google Sheet-এ জমা হয়েছে!', 'bg-emerald-900/50 text-emerald-300 border border-emerald-700');
+            } catch (error) {
+                showStatus('জমা দিতে ব্যর্থ হয়েছে: ' + error.message, 'bg-rose-900/50 text-rose-300 border border-rose-700');
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Submit to Sheet';
+            }
+        }
+
+        function showStatus(msg, classes) {
+            const status = document.getElementById('statusMessage');
+            status.className = `text-center text-sm p-3 rounded-lg ${classes}`;
+            status.innerText = msg;
+            status.classList.remove('hidden');
+            setTimeout(() => {
+                status.classList.add('hidden');
+            }, 3000);
+        }
+
+        // Auto generate on load
+        window.onload = generateData;
+    </script>
+</body>
+</html>
